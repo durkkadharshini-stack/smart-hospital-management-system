@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Treatments - Smart Hospital</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #FFF6F9;
+        }
+
+        header {
+            background: #D94F78;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        nav {
+            background: white;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #E9C7D2;
+        }
+
+        nav a {
+            color: #B7355D;
+            text-decoration: none;
+            margin: 15px;
+            font-weight: 600;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: 35px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #E9C7D2;
+        }
+
+        h2 {
+            color: #B7355D;
+        }
+
+        form {
+            padding: 25px;
+            border: 1px solid #E8D0D8;
+            border-radius: 10px;
+            background: #FFFDFE;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #6F3D4E;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #D9B8C4;
+            border-radius: 6px;
+        }
+
+        textarea {
+            min-height: 90px;
+        }
+
+        button {
+            background: #D94F78;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 18px;
+            margin-right: 5px;
+        }
+
+        button:hover {
+            background: #B7355D;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #C83F68;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #E9DDE1;
+            text-align: center;
+        }
+
+        @media(max-width:700px) {
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+    <h1>Treatment Management</h1>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/patients/">Patients</a>
+    <a href="/doctors/">Doctors</a>
+    <a href="/appointments/">Appointments</a>
+    <a href="/treatments/">Treatments</a>
+</nav>
+
+<div class="container">
+
+    <h2>Add Treatment</h2>
+
+    <form id="treatmentForm">
+
+        <div class="grid">
+
+            <div>
+                <label>Patient</label>
+
+                <select id="patient" required>
+                    <option value="">Select Patient</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Doctor</label>
+
+                <select id="doctor" required>
+                    <option value="">Select Doctor</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Treatment Name</label>
+
+                <input
+                    type="text"
+                    id="treatmentName"
+                    required
+                >
+            </div>
+
+            <div>
+                <label>Treatment Date</label>
+
+                <input
+                    type="date"
+                    id="treatmentDate"
+                    required
+                >
+            </div>
+
+            <div>
+                <label>Description</label>
+
+                <textarea
+                    id="description"
+                    required
+                ></textarea>
+            </div>
+
+        </div>
+
+        <button type="submit">Add Treatment</button>
+
+    </form>
+
+    <h2>Treatment List</h2>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Treatment</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="treatmentTable"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+const API = "/api/treatments/";
+
+
+/* Load Patients */
+
+async function loadPatients() {
+
+    const response = await fetch("/api/patients/");
+
+    const patients = await response.json();
+
+    const select = document.getElementById("patient");
+
+    select.innerHTML = '<option value="">Select Patient</option>';
+
+    patients.forEach(patient => {
+
+        select.innerHTML += `
+            <option value="${patient.id}">
+                ${patient.name}
+            </option>
+        `;
+
+    });
+
+}
+
+
+/* Load Doctors */
+
+async function loadDoctors() {
+
+    const response = await fetch("/api/doctors/");
+
+    const doctors = await response.json();
+
+    const select = document.getElementById("doctor");
+
+    select.innerHTML = '<option value="">Select Doctor</option>';
+
+    doctors.forEach(doctor => {
+
+        select.innerHTML += `
+            <option value="${doctor.id}">
+                ${doctor.name}
+            </option>
+        `;
+
+    });
+
+}
+
+
+/* Load Treatments */
+
+async function loadTreatments() {
+
+    const response = await fetch(API);
+
+    const treatments = await response.json();
+
+    const table = document.getElementById("treatmentTable");
+
+    table.innerHTML = "";
+
+    treatments.forEach(t => {
+
+        table.innerHTML += `
+
+            <tr>
+
+                <td>${t.id}</td>
+
+                <td>Patient ID: ${t.patient}</td>
+
+                <td>Doctor ID: ${t.doctor}</td>
+
+                <td>${t.treatment_name}</td>
+
+                <td>${t.treatment_date}</td>
+
+                <td>${t.description}</td>
+
+                <td>
+
+                    <button onclick="editTreatment(${t.id})">
+                        Edit
+                    </button>
+
+                    <button onclick="deleteTreatment(${t.id})">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+}
+
+
+/* Add Treatment */
+
+document.getElementById("treatmentForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const data = {
+
+        patient:
+            parseInt(document.getElementById("patient").value),
+
+        doctor:
+            parseInt(document.getElementById("doctor").value),
+
+        treatment_name:
+            document.getElementById("treatmentName").value,
+
+        treatment_date:
+            document.getElementById("treatmentDate").value,
+
+        description:
+            document.getElementById("description").value
+
+    };
+
+    const response = await fetch(API, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(data)
+
+    });
+
+
+    if (response.ok) {
+
+        alert("Treatment added successfully!");
+
+        this.reset();
+
+        loadTreatments();
+
+    } else {
+
+        const error = await response.json();
+
+        alert(JSON.stringify(error));
+
+    }
+
+});
+
+
+/* Edit Treatment */
+
+async function editTreatment(id) {
+
+    const response = await fetch(API + id + "/");
+
+    const treatment = await response.json();
+
+
+    const treatmentName = prompt(
+        "Enter treatment name:",
+        treatment.treatment_name
+    );
+
+    if (treatmentName === null) return;
+
+
+    const date = prompt(
+        "Enter treatment date (YYYY-MM-DD):",
+        treatment.treatment_date
+    );
+
+    if (date === null) return;
+
+
+    const description = prompt(
+        "Enter description:",
+        treatment.description
+    );
+
+    if (description === null) return;
+
+
+    const updateResponse = await fetch(API + id + "/", {
+
+        method: "PUT",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+            patient: treatment.patient,
+
+            doctor: treatment.doctor,
+
+            treatment_name: treatmentName,
+
+            treatment_date: date,
+
+            description: description
+
+        })
+
+    });
+
+
+    if (updateResponse.ok) {
+
+        alert("Treatment updated successfully!");
+
+        loadTreatments();
+
+    } else {
+
+        const error = await updateResponse.json();
+
+        alert(JSON.stringify(error));
+
+    }
+
+}
+
+
+/* Delete Treatment */
+
+async function deleteTreatment(id) {
+
+    if (!confirm("Delete this treatment?")) {
+        return;
+    }
+
+    const response = await fetch(API + id + "/", {
+
+        method: "DELETE"
+
+    });
+
+
+    if (response.ok) {
+
+        alert("Treatment deleted successfully!");
+
+        loadTreatments();
+
+    } else {
+
+        alert("Failed to delete treatment.");
+
+    }
+
+}
+
+
+/* Initial Load */
+
+loadPatients();
+
+loadDoctors();
+
+loadTreatments();
+
+</script>
+
+</body>
+
+</html>

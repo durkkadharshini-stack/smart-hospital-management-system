@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patients - Smart Hospital</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #FFF6F9;
+            color: #333;
+        }
+
+        header {
+            background: #D94F78;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        nav {
+            background: white;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #E9C7D2;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #B7355D;
+            margin: 15px;
+            font-weight: 600;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: 35px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #E9C7D2;
+        }
+
+        h2 {
+            color: #B7355D;
+        }
+
+        form {
+            background: #FFFDFE;
+            border: 1px solid #E8D0D8;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #6F3D4E;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #D9B8C4;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 80px;
+        }
+
+        button {
+            margin-top: 18px;
+            background: #D94F78;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #B7355D;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #C83F68;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #E9DDE1;
+        }
+
+        .delete {
+            margin: 0;
+            background: #D94F78;
+        }
+
+        .edit {
+            margin: 0 5px 0 0;
+            background: #B7355D;
+        }
+
+        .error {
+            color: red;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        @media(max-width:700px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Patient Management</h1>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/patients/">Patients</a>
+    <a href="/doctors/">Doctors</a>
+    <a href="/appointments/">Appointments</a>
+    <a href="/treatments/">Treatments</a>
+</nav>
+
+<div class="container">
+
+    <h2>Add Patient</h2>
+
+    <form id="patientForm">
+
+        <div class="grid">
+
+            <div>
+                <label>Name</label>
+                <input type="text" id="name" required>
+            </div>
+
+            <div>
+                <label>Age</label>
+                <input type="number" id="age" required>
+            </div>
+
+            <div>
+                <label>Gender</label>
+                <select id="gender" required>
+                    <option value="">Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Phone</label>
+                <input type="text" id="phone" required>
+            </div>
+
+            <div>
+                <label>Email</label>
+                <input type="email" id="email" required>
+            </div>
+
+            <div>
+                <label>Address</label>
+                <textarea id="address" required></textarea>
+            </div>
+
+        </div>
+
+        <button type="submit">Add Patient</button>
+
+        <p id="formError" class="error"></p>
+
+    </form>
+
+    <h2>Patient List</h2>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="patientTable"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+const API = "/api/patients/";
+
+
+async function loadPatients() {
+
+    const response = await fetch(API);
+
+    const patients = await response.json();
+
+    const table = document.getElementById("patientTable");
+
+    table.innerHTML = "";
+
+    patients.forEach(patient => {
+
+        table.innerHTML += `
+            <tr>
+                <td>${patient.id}</td>
+                <td>${patient.name}</td>
+                <td>${patient.age}</td>
+                <td>${patient.gender}</td>
+                <td>${patient.phone}</td>
+                <td>${patient.email}</td>
+
+                <td>
+
+                    <button class="edit"
+                        onclick="editPatient(${patient.id})">
+                        Edit
+                    </button>
+
+                    <button class="delete"
+                        onclick="deletePatient(${patient.id})">
+                        Delete
+                    </button>
+
+                </td>
+            </tr>
+        `;
+
+    });
+}
+
+
+document.getElementById("patientForm").addEventListener(
+    "submit",
+    async function(e) {
+
+        e.preventDefault();
+
+        const formError = document.getElementById("formError");
+
+        // Clear previous error
+        formError.innerText = "";
+
+        const data = {
+
+            name: document.getElementById("name").value,
+
+            age: parseInt(
+                document.getElementById("age").value
+            ),
+
+            gender: document.getElementById("gender").value,
+
+            phone: document.getElementById("phone").value,
+
+            email: document.getElementById("email").value,
+
+            address: document.getElementById("address").value
+        };
+
+
+        const response = await fetch(API, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(data)
+        });
+
+
+        if (response.ok) {
+
+            alert("Patient added successfully!");
+
+            formError.innerText = "";
+
+            this.reset();
+
+            loadPatients();
+
+        } 
+        
+        else {
+
+            const error = await response.json();
+
+            if (error.phone) {
+
+                formError.innerText = error.phone[0];
+
+            }
+
+            else if (error.age) {
+
+                formError.innerText = error.age[0];
+
+            }
+
+            else {
+
+                formError.innerText =
+                    "Please check the entered details.";
+
+            }
+
+        }
+
+    }
+);
+
+
+async function deletePatient(id) {
+
+    if (!confirm("Delete this patient?")) {
+        return;
+    }
+
+
+    const response = await fetch(
+        API + id + "/",
+        {
+            method: "DELETE"
+        }
+    );
+
+
+    if (response.ok) {
+
+        alert("Patient deleted successfully!");
+
+        loadPatients();
+
+    }
+
+}
+
+
+async function editPatient(id) {
+
+    const response = await fetch(
+        `/api/patients/${id}/`
+    );
+
+    const patient = await response.json();
+
+
+    const name = prompt(
+        "Enter patient name:",
+        patient.name
+    );
+
+    if (name === null) return;
+
+
+    const age = prompt(
+        "Enter age:",
+        patient.age
+    );
+
+    if (age === null) return;
+
+
+    const gender = prompt(
+        "Enter gender:",
+        patient.gender
+    );
+
+    if (gender === null) return;
+
+
+    const phone = prompt(
+        "Enter phone:",
+        patient.phone
+    );
+
+    if (phone === null) return;
+
+
+    const email = prompt(
+        "Enter email:",
+        patient.email
+    );
+
+    if (email === null) return;
+
+
+    const address = prompt(
+        "Enter address:",
+        patient.address
+    );
+
+    if (address === null) return;
+
+
+    const updateResponse = await fetch(
+        `/api/patients/${id}/`,
+        {
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                name: name,
+
+                age: parseInt(age),
+
+                gender: gender,
+
+                phone: phone,
+
+                email: email,
+
+                address: address
+
+            })
+        }
+    );
+
+
+    if (updateResponse.ok) {
+
+        alert("Patient updated successfully!");
+
+        loadPatients();
+
+    }
+
+    else {
+
+        const error = await updateResponse.json();
+
+        if (error.phone) {
+
+            alert(error.phone[0]);
+
+        }
+
+        else if (error.age) {
+
+            alert(error.age[0]);
+
+        }
+
+        else {
+
+            alert("Please check the entered details.");
+
+        }
+
+    }
+
+}
+
+
+loadPatients();
+
+</script>
+
+</body>
+</html>

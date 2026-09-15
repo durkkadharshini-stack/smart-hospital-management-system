@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Appointments - Smart Hospital</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #FFF6F9;
+        }
+
+        header {
+            background: #D94F78;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        nav {
+            background: white;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #E9C7D2;
+        }
+
+        nav a {
+            color: #B7355D;
+            text-decoration: none;
+            margin: 15px;
+            font-weight: 600;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: 35px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #E9C7D2;
+        }
+
+        h2 {
+            color: #B7355D;
+        }
+
+        form {
+            padding: 25px;
+            border: 1px solid #E8D0D8;
+            border-radius: 10px;
+            background: #FFFDFE;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #6F3D4E;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #D9B8C4;
+            border-radius: 6px;
+        }
+
+        button {
+            background: #D94F78;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 18px;
+            margin-right: 5px;
+        }
+
+        button:hover {
+            background: #B7355D;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #C83F68;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #E9DDE1;
+            text-align: center;
+        }
+
+        @media(max-width:700px) {
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+    <h1>Appointment Management</h1>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/patients/">Patients</a>
+    <a href="/doctors/">Doctors</a>
+    <a href="/appointments/">Appointments</a>
+    <a href="/treatments/">Treatments</a>
+</nav>
+
+<div class="container">
+
+    <h2>Book Appointment</h2>
+
+    <form id="appointmentForm">
+
+        <div class="grid">
+
+            <div>
+                <label>Patient</label>
+
+                <select id="patient" required>
+                    <option value="">Select Patient</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Doctor</label>
+
+                <select id="doctor" required>
+                    <option value="">Select Doctor</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Date</label>
+                <input type="date" id="date" required>
+            </div>
+
+            <div>
+                <label>Time</label>
+                <input type="time" id="time" required>
+            </div>
+
+            <div>
+                <label>Reason</label>
+                <input type="text" id="reason" required>
+            </div>
+
+        </div>
+
+        <button type="submit">Book Appointment</button>
+
+    </form>
+
+    <h2>Appointment List</h2>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Reason</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="appointmentTable"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+const API = "/api/appointments/";
+
+
+/* Load Patients */
+
+async function loadPatients() {
+
+    const response = await fetch("/api/patients/");
+    const patients = await response.json();
+
+    const select = document.getElementById("patient");
+
+    select.innerHTML = '<option value="">Select Patient</option>';
+
+    patients.forEach(patient => {
+
+        select.innerHTML += `
+            <option value="${patient.id}">
+                ${patient.name}
+            </option>
+        `;
+
+    });
+
+}
+
+
+/* Load Doctors */
+
+async function loadDoctors() {
+
+    const response = await fetch("/api/doctors/");
+    const doctors = await response.json();
+
+    const select = document.getElementById("doctor");
+
+    select.innerHTML = '<option value="">Select Doctor</option>';
+
+    doctors.forEach(doctor => {
+
+        select.innerHTML += `
+            <option value="${doctor.id}">
+                ${doctor.name}
+            </option>
+        `;
+
+    });
+
+}
+
+
+/* Load Appointments */
+
+async function loadAppointments() {
+
+    const response = await fetch(API);
+
+    const appointments = await response.json();
+
+    const table = document.getElementById("appointmentTable");
+
+    table.innerHTML = "";
+
+    appointments.forEach(a => {
+
+        table.innerHTML += `
+
+            <tr>
+
+                <td>${a.id}</td>
+
+                <td>Patient ID: ${a.patient}</td>
+
+                <td>Doctor ID: ${a.doctor}</td>
+
+                <td>${a.appointment_date}</td>
+
+                <td>${a.appointment_time}</td>
+
+                <td>${a.reason}</td>
+
+                <td>
+
+                    <button onclick="editAppointment(${a.id})">
+                        Edit
+                    </button>
+
+                    <button onclick="deleteAppointment(${a.id})">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+}
+
+
+/* Create Appointment */
+
+document.getElementById("appointmentForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const data = {
+
+        patient:
+            parseInt(document.getElementById("patient").value),
+
+        doctor:
+            parseInt(document.getElementById("doctor").value),
+
+        appointment_date:
+            document.getElementById("date").value,
+
+        appointment_time:
+            document.getElementById("time").value,
+
+        reason:
+            document.getElementById("reason").value
+
+    };
+
+    const response = await fetch(API, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(data)
+
+    });
+
+    if (response.ok) {
+
+        alert("Appointment booked successfully!");
+
+        this.reset();
+
+        loadAppointments();
+
+    } else {
+
+        const error = await response.json();
+
+        alert(JSON.stringify(error));
+
+    }
+
+});
+
+
+/* Update Appointment */
+
+async function editAppointment(id) {
+
+    const response = await fetch(API + id + "/");
+
+    const appointment = await response.json();
+
+    const date = prompt(
+        "Enter appointment date (YYYY-MM-DD):",
+        appointment.appointment_date
+    );
+
+    if (date === null) return;
+
+
+    const time = prompt(
+        "Enter appointment time (HH:MM):",
+        appointment.appointment_time
+    );
+
+    if (time === null) return;
+
+
+    const reason = prompt(
+        "Enter reason:",
+        appointment.reason
+    );
+
+    if (reason === null) return;
+
+
+    const updateResponse = await fetch(API + id + "/", {
+
+        method: "PUT",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+            patient: appointment.patient,
+
+            doctor: appointment.doctor,
+
+            appointment_date: date,
+
+            appointment_time: time,
+
+            reason: reason
+
+        })
+
+    });
+
+
+    if (updateResponse.ok) {
+
+        alert("Appointment updated successfully!");
+
+        loadAppointments();
+
+    } else {
+
+        const error = await updateResponse.json();
+
+        alert(JSON.stringify(error));
+
+    }
+
+}
+
+
+/* Delete Appointment */
+
+async function deleteAppointment(id) {
+
+    if (!confirm("Delete this appointment?")) {
+        return;
+    }
+
+    const response = await fetch(API + id + "/", {
+
+        method: "DELETE"
+
+    });
+
+
+    if (response.ok) {
+
+        alert("Appointment deleted successfully!");
+
+        loadAppointments();
+
+    } else {
+
+        alert("Failed to delete appointment.");
+
+    }
+
+}
+
+
+/* Initial Load */
+
+loadPatients();
+
+loadDoctors();
+
+loadAppointments();
+
+</script>
+
+</body>
+
+</html>

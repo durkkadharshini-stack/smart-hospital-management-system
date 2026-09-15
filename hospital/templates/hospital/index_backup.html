@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Hospital Management System</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #FFF6F9;
+            color: #333;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            background: #D94F78;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        header p {
+            margin: 8px 0 0;
+            font-size: 14px;
+            color: #FFEAF1;
+        }
+
+        /* ================= MAIN CONTAINER ================= */
+
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: 35px auto;
+            background: white;
+            padding: 34px;
+            border-radius: 14px;
+            border: 1px solid #E9C7D2;
+            box-shadow: 0 5px 18px rgba(180, 70, 105, 0.10);
+        }
+
+        /* ================= SECTION ================= */
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            border-left: 5px solid #D94F78;
+            padding-left: 12px;
+            margin-bottom: 22px;
+        }
+
+        h2 {
+            margin: 0;
+            color: #B7355D;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        h3 {
+            color: #B7355D;
+            margin-top: 28px;
+            margin-bottom: 15px;
+        }
+
+        /* ================= FORM ================= */
+
+        form {
+            background: #FFFDFE;
+            border: 1px solid #E8D0D8;
+            padding: 24px;
+            border-radius: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: #6F3D4E;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #D9B8C4;
+            border-radius: 7px;
+            font-size: 14px;
+            font-family: inherit;
+            background: white;
+            color: #333;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #8F8F8F;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #D94F78;
+            box-shadow: 0 0 0 3px rgba(217, 79, 120, 0.12);
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        /* ================= BUTTON ================= */
+
+        button {
+            background: #D94F78;
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #B7355D;
+        }
+
+        .form-button {
+            margin-top: 18px;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 22px;
+            border: 1px solid #E2C7D0;
+            border-radius: 9px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #C83F68;
+            color: white;
+            padding: 14px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #E9DDE1;
+            font-size: 14px;
+            color: #383838;
+            background: #FFFFFF;
+        }
+
+        tbody tr:hover td {
+            background: #FFF4F7;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ================= ACTION BUTTONS ================= */
+
+        .delete-btn {
+            background: #D94F78;
+            padding: 8px 15px;
+            font-size: 13px;
+        }
+
+        .delete-btn:hover {
+            background: #A92F53;
+        }
+
+        /* ================= APPOINTMENT ================= */
+
+        .appointment-card {
+            background: #FFF0F4;
+            border: 1px solid #E7B7C5;
+            padding: 26px;
+            border-radius: 11px;
+            box-shadow: 0 4px 14px rgba(190, 80, 110, 0.08);
+        }
+
+        .appointment-card .section-title {
+            border-left-color: #D94F78;
+        }
+
+        .appointment-form,
+        .treatment-form {
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        .appointment-grid,
+        .treatment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 17px;
+        }
+
+        /* ================= TREATMENT ================= */
+
+        .treatment-card {
+            background: #FFF0F4;
+            border: 1px solid #E7B7C5;
+            padding: 26px;
+            border-radius: 11px;
+            box-shadow: 0 4px 14px rgba(190, 80, 110, 0.08);
+        }
+
+        .treatment-card .section-title {
+            border-left-color: #D94F78;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* ================= MESSAGE ================= */
+
+        .message {
+            display: none;
+            margin-top: 16px;
+            padding: 12px 15px;
+            border-radius: 7px;
+            background: #F9DDE6;
+            color: #8A304D;
+            border: 1px solid #E7B7C5;
+            font-size: 14px;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            text-align: center;
+            padding: 22px;
+            color: #8D6873;
+            font-size: 13px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 700px) {
+
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+
+            .form-grid,
+            .appointment-grid,
+            .treatment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            header h1 {
+                font-size: 23px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            form {
+                padding: 18px;
+            }
+
+            .appointment-card,
+            .treatment-card {
+                padding: 20px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header>
+
+        <h1>
+            Smart Hospital & Patient Management System
+        </h1>
+
+        <p>
+            Simple • Smart • Efficient Hospital Management
+        </p>
+
+    </header>
+
+
+    <!-- ================= MAIN CONTAINER ================= -->
+
+    <div class="container">
+
+
+        <!-- ================= PATIENT ================= -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <h2>Patient Management</h2>
+            </div>
+
+            <form id="patientForm">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>Patient Name</label>
+                        <input
+                            type="text"
+                            id="patientName"
+                            placeholder="Patient Name"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label>Age</label>
+                        <input
+                            type="number"
+                            id="patientAge"
+                            placeholder="Age"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label>Gender</label>
+                        <select id="patientGender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Phone Number</label>
+                        <input
+                            type="text"
+                            id="patientPhone"
+                            placeholder="Phone Number"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            id="patientEmail"
+                            placeholder="Email"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label>Address</label>
+                        <textarea
+                            id="patientAddress"
+                            placeholder="Address"
+                            required
+                        ></textarea>
+                    </div>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="form-button"
+                >
+                    Add Patient
+                </button>
+
+            </form>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="patientTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= DOCTOR ================= -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <h2>Doctor Management</h2>
+            </div>
+
+            <form id="doctorForm">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>Doctor Name</label>
+                        <input
+                            type="text"
+                            id="doctorName"
+                            placeholder="Doctor Name"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label>Specialization</label>
+                        <input
+                            type="text"
+                            id="doctorSpecialization"
+                            placeholder="Specialization"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label>Phone Number</label>
+                        <input
+                            type="text"
+                            id="doctorPhone"
+                            placeholder="Phone Number"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            id="doctorEmail"
+                            placeholder="Email"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="form-button"
+                >
+                    Add Doctor
+                </button>
+
+            </form>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Specialization</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="doctorTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= APPOINTMENT ================= -->
+
+        <div class="section appointment-card">
+
+            <div class="section-title">
+                <h2>Appointment Booking</h2>
+            </div>
+
+
+            <form
+                id="appointmentForm"
+                class="appointment-form"
+            >
+
+                <div class="appointment-grid">
+
+                    <div>
+                        <label>Patient</label>
+
+                        <select
+                            id="appointmentPatient"
+                            required
+                        >
+                            <option value="">
+                                Select Patient
+                            </option>
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label>Doctor</label>
+
+                        <select
+                            id="appointmentDoctor"
+                            required
+                        >
+                            <option value="">
+                                Select Doctor
+                            </option>
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label>Date</label>
+
+                        <input
+                            type="date"
+                            id="appointmentDate"
+                            required
+                        >
+                    </div>
+
+
+                    <div>
+                        <label>Time</label>
+
+                        <input
+                            type="time"
+                            id="appointmentTime"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="full-width">
+                        <label>Reason</label>
+
+                        <input
+                            type="text"
+                            id="appointmentReason"
+                            placeholder="Reason for Appointment"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="form-button"
+                >
+                    Book Appointment
+                </button>
+
+            </form>
+
+
+            <div
+                class="message"
+                id="appointmentMessage"
+            ></div>
+
+
+            <!-- APPOINTMENT LIST -->
+
+            <h3>Appointment List</h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Reason</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="appointmentTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= TREATMENT ================= -->
+
+        <div class="section treatment-card">
+
+            <div class="section-title">
+                <h2>Treatment Management</h2>
+            </div>
+
+
+            <form
+                id="treatmentForm"
+                class="treatment-form"
+            >
+
+                <div class="treatment-grid">
+
+                    <div>
+                        <label>Patient</label>
+
+                        <select
+                            id="treatmentPatient"
+                            required
+                        >
+                            <option value="">
+                                Select Patient
+                            </option>
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label>Doctor</label>
+
+                        <select
+                            id="treatmentDoctor"
+                            required
+                        >
+                            <option value="">
+                                Select Doctor
+                            </option>
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label>Treatment Name</label>
+
+                        <input
+                            type="text"
+                            id="treatmentName"
+                            placeholder="Enter treatment name"
+                            required
+                        >
+                    </div>
+
+
+                    <div>
+                        <label>Treatment Date</label>
+
+                        <input
+                            type="date"
+                            id="treatmentDate"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="full-width">
+
+                        <label>Description</label>
+
+                        <textarea
+                            id="treatmentDescription"
+                            placeholder="Enter treatment description"
+                            required
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="form-button"
+                >
+                    Add Treatment
+                </button>
+
+            </form>
+
+
+            <div
+                class="message"
+                id="treatmentMessage"
+            ></div>
+
+
+            <!-- TREATMENT LIST -->
+
+            <h3>Treatment List</h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Treatment</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="treatmentTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        © 2026 Smart Hospital & Patient Management System
+
+    </footer>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        const patientAPI = "/api/patients/";
+        const doctorAPI = "/api/doctors/";
+        const appointmentAPI = "/api/appointments/";
+        const treatmentAPI = "/api/treatments/";
+
+
+        /* ================= PATIENT ================= */
+
+        async function loadPatients() {
+
+            const response = await fetch(patientAPI);
+            const patients = await response.json();
+
+            const table =
+                document.getElementById("patientTableBody");
+
+            table.innerHTML = "";
+
+
+            const patientSelect =
+                document.getElementById("appointmentPatient");
+
+            const treatmentPatient =
+                document.getElementById("treatmentPatient");
+
+
+            patientSelect.innerHTML =
+                '<option value="">Select Patient</option>';
+
+            treatmentPatient.innerHTML =
+                '<option value="">Select Patient</option>';
+
+
+            patients.forEach(patient => {
+
+                table.innerHTML += `
+
+                    <tr>
+
+                        <td>${patient.id}</td>
+                        <td>${patient.name}</td>
+                        <td>${patient.age}</td>
+                        <td>${patient.gender}</td>
+                        <td>${patient.phone}</td>
+                        <td>${patient.email}</td>
+
+                        <td>
+
+                            <button
+                                class="delete-btn"
+                                onclick="deletePatient(${patient.id})"
+                            >
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+
+                patientSelect.innerHTML += `
+
+                    <option value="${patient.id}">
+                        ${patient.name}
+                    </option>
+
+                `;
+
+
+                treatmentPatient.innerHTML += `
+
+                    <option value="${patient.id}">
+                        ${patient.name}
+                    </option>
+
+                `;
+
+            });
+
+        }
+
+
+        /* ================= ADD PATIENT ================= */
+
+        document
+            .getElementById("patientForm")
+            .addEventListener(
+                "submit",
+                async function(event) {
+
+                    event.preventDefault();
+
+                    const data = {
+
+                        name:
+                            document.getElementById(
+                                "patientName"
+                            ).value,
+
+                        age:
+                            parseInt(
+                                document.getElementById(
+                                    "patientAge"
+                                ).value
+                            ),
+
+                        gender:
+                            document.getElementById(
+                                "patientGender"
+                            ).value,
+
+                        phone:
+                            document.getElementById(
+                                "patientPhone"
+                            ).value,
+
+                        email:
+                            document.getElementById(
+                                "patientEmail"
+                            ).value,
+
+                        address:
+                            document.getElementById(
+                                "patientAddress"
+                            ).value
+
+                    };
+
+
+                    const response =
+                        await fetch(
+                            patientAPI,
+                            {
+
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(data)
+
+                            }
+                        );
+
+
+                    if (response.ok) {
+
+                        alert(
+                            "Patient added successfully!"
+                        );
+
+                        this.reset();
+
+                        loadPatients();
+
+                    }
+
+                    else {
+
+                        const error =
+                            await response.json();
+
+                        alert(
+                            JSON.stringify(error)
+                        );
+
+                    }
+
+                }
+            );
+
+
+        /* ================= DELETE PATIENT ================= */
+
+        async function deletePatient(id) {
+
+            if (
+                !confirm(
+                    "Are you sure you want to delete this patient?"
+                )
+            ) {
+                return;
+            }
+
+
+            const response =
+                await fetch(
+                    patientAPI + id + "/",
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (response.ok) {
+
+                alert(
+                    "Patient deleted successfully!"
+                );
+
+                loadPatients();
+
+                loadAppointments();
+
+                loadTreatments();
+
+            }
+
+        }
+
+
+        /* ================= DOCTOR ================= */
+
+        async function loadDoctors() {
+
+            const response = await fetch(doctorAPI);
+            const doctors = await response.json();
+
+            const table =
+                document.getElementById("doctorTableBody");
+
+            table.innerHTML = "";
+
+
+            const doctorSelect =
+                document.getElementById("appointmentDoctor");
+
+            const treatmentDoctor =
+                document.getElementById("treatmentDoctor");
+
+
+            doctorSelect.innerHTML =
+                '<option value="">Select Doctor</option>';
+
+            treatmentDoctor.innerHTML =
+                '<option value="">Select Doctor</option>';
+
+
+            doctors.forEach(doctor => {
+
+                table.innerHTML += `
+
+                    <tr>
+
+                        <td>${doctor.id}</td>
+                        <td>${doctor.name}</td>
+                        <td>${doctor.specialization}</td>
+                        <td>${doctor.phone}</td>
+                        <td>${doctor.email}</td>
+
+                        <td>
+
+                            <button
+                                class="delete-btn"
+                                onclick="deleteDoctor(${doctor.id})"
+                            >
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+
+                doctorSelect.innerHTML += `
+
+                    <option value="${doctor.id}">
+                        ${doctor.name}
+                    </option>
+
+                `;
+
+
+                treatmentDoctor.innerHTML += `
+
+                    <option value="${doctor.id}">
+                        ${doctor.name}
+                    </option>
+
+                `;
+
+            });
+
+        }
+
+
+        /* ================= ADD DOCTOR ================= */
+
+        document
+            .getElementById("doctorForm")
+            .addEventListener(
+                "submit",
+                async function(event) {
+
+                    event.preventDefault();
+
+
+                    const data = {
+
+                        name:
+                            document.getElementById(
+                                "doctorName"
+                            ).value,
+
+                        specialization:
+                            document.getElementById(
+                                "doctorSpecialization"
+                            ).value,
+
+                        phone:
+                            document.getElementById(
+                                "doctorPhone"
+                            ).value,
+
+                        email:
+                            document.getElementById(
+                                "doctorEmail"
+                            ).value
+
+                    };
+
+
+                    const response =
+                        await fetch(
+                            doctorAPI,
+                            {
+
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(data)
+
+                            }
+                        );
+
+
+                    if (response.ok) {
+
+                        alert(
+                            "Doctor added successfully!"
+                        );
+
+                        this.reset();
+
+                        loadDoctors();
+
+                    }
+
+                    else {
+
+                        const error =
+                            await response.json();
+
+                        alert(
+                            JSON.stringify(error)
+                        );
+
+                    }
+
+                }
+            );
+
+
+        /* ================= DELETE DOCTOR ================= */
+
+        async function deleteDoctor(id) {
+
+            if (
+                !confirm(
+                    "Are you sure you want to delete this doctor?"
+                )
+            ) {
+                return;
+            }
+
+
+            const response =
+                await fetch(
+                    doctorAPI + id + "/",
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (response.ok) {
+
+                alert(
+                    "Doctor deleted successfully!"
+                );
+
+                loadDoctors();
+
+                loadAppointments();
+
+                loadTreatments();
+
+            }
+
+        }
+
+
+        /* ================= APPOINTMENT ================= */
+
+        async function loadAppointments() {
+
+            const response =
+                await fetch(appointmentAPI);
+
+            const appointments =
+                await response.json();
+
+
+            const table =
+                document.getElementById(
+                    "appointmentTableBody"
+                );
+
+            table.innerHTML = "";
+
+
+            appointments.forEach(appointment => {
+
+                table.innerHTML += `
+
+                    <tr>
+
+                        <td>${appointment.id}</td>
+
+                        <td>
+                            Patient ID: ${appointment.patient}
+                        </td>
+
+                        <td>
+                            Doctor ID: ${appointment.doctor}
+                        </td>
+
+                        <td>
+                            ${appointment.appointment_date}
+                        </td>
+
+                        <td>
+                            ${appointment.appointment_time}
+                        </td>
+
+                        <td>
+                            ${appointment.reason}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="delete-btn"
+                                onclick="deleteAppointment(${appointment.id})"
+                            >
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            });
+
+        }
+
+
+        /* ================= DELETE APPOINTMENT ================= */
+
+        async function deleteAppointment(id) {
+
+            if (
+                !confirm(
+                    "Are you sure you want to delete this appointment?"
+                )
+            ) {
+                return;
+            }
+
+
+            const response =
+                await fetch(
+                    appointmentAPI + id + "/",
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (response.ok) {
+
+                alert(
+                    "Appointment deleted successfully!"
+                );
+
+                loadAppointments();
+
+            }
+
+            else {
+
+                alert(
+                    "Unable to delete appointment."
+                );
+
+            }
+
+        }
+
+
+        /* ================= BOOK APPOINTMENT ================= */
+
+        document
+            .getElementById("appointmentForm")
+            .addEventListener(
+                "submit",
+                async function(event) {
+
+                    event.preventDefault();
+
+
+                    const data = {
+
+                        patient:
+                            parseInt(
+                                document.getElementById(
+                                    "appointmentPatient"
+                                ).value
+                            ),
+
+                        doctor:
+                            parseInt(
+                                document.getElementById(
+                                    "appointmentDoctor"
+                                ).value
+                            ),
+
+                        appointment_date:
+                            document.getElementById(
+                                "appointmentDate"
+                            ).value,
+
+                        appointment_time:
+                            document.getElementById(
+                                "appointmentTime"
+                            ).value,
+
+                        reason:
+                            document.getElementById(
+                                "appointmentReason"
+                            ).value
+
+                    };
+
+
+                    const response =
+                        await fetch(
+                            appointmentAPI,
+                            {
+
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(data)
+
+                            }
+                        );
+
+
+                    const message =
+                        document.getElementById(
+                            "appointmentMessage"
+                        );
+
+
+                    if (response.ok) {
+
+                        message.style.display =
+                            "block";
+
+                        message.innerText =
+                            "Appointment booked successfully!";
+
+                        this.reset();
+
+                        loadAppointments();
+
+                    }
+
+                    else {
+
+                        const error =
+                            await response.json();
+
+                        message.style.display =
+                            "block";
+
+                        message.innerText =
+                            "Error: " +
+                            JSON.stringify(error);
+
+                    }
+
+                }
+            );
+
+
+        /* ================= TREATMENT ================= */
+
+        async function loadTreatments() {
+
+            const response =
+                await fetch(treatmentAPI);
+
+            const treatments =
+                await response.json();
+
+
+            const table =
+                document.getElementById(
+                    "treatmentTableBody"
+                );
+
+            table.innerHTML = "";
+
+
+            treatments.forEach(treatment => {
+
+                table.innerHTML += `
+
+                    <tr>
+
+                        <td>${treatment.id}</td>
+
+                        <td>
+                            Patient ID: ${treatment.patient}
+                        </td>
+
+                        <td>
+                            Doctor ID: ${treatment.doctor}
+                        </td>
+
+                        <td>
+                            ${treatment.treatment_name}
+                        </td>
+
+                        <td>
+                            ${treatment.treatment_date}
+                        </td>
+
+                        <td>
+                            ${treatment.description}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="delete-btn"
+                                onclick="deleteTreatment(${treatment.id})"
+                            >
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            });
+
+        }
+
+
+        /* ================= ADD TREATMENT ================= */
+
+        document
+            .getElementById("treatmentForm")
+            .addEventListener(
+                "submit",
+                async function(event) {
+
+                    event.preventDefault();
+
+
+                    const data = {
+
+                        patient:
+                            parseInt(
+                                document.getElementById(
+                                    "treatmentPatient"
+                                ).value
+                            ),
+
+                        doctor:
+                            parseInt(
+                                document.getElementById(
+                                    "treatmentDoctor"
+                                ).value
+                            ),
+
+                        treatment_name:
+                            document.getElementById(
+                                "treatmentName"
+                            ).value,
+
+                        treatment_date:
+                            document.getElementById(
+                                "treatmentDate"
+                            ).value,
+
+                        description:
+                            document.getElementById(
+                                "treatmentDescription"
+                            ).value
+
+                    };
+
+
+                    const response =
+                        await fetch(
+                            treatmentAPI,
+                            {
+
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(data)
+
+                            }
+                        );
+
+
+                    const message =
+                        document.getElementById(
+                            "treatmentMessage"
+                        );
+
+
+                    if (response.ok) {
+
+                        message.style.display =
+                            "block";
+
+                        message.innerText =
+                            "Treatment added successfully!";
+
+                        this.reset();
+
+                        loadTreatments();
+
+                    }
+
+                    else {
+
+                        const error =
+                            await response.json();
+
+                        message.style.display =
+                            "block";
+
+                        message.innerText =
+                            "Error: " +
+                            JSON.stringify(error);
+
+                    }
+
+                }
+            );
+
+
+        /* ================= DELETE TREATMENT ================= */
+
+        async function deleteTreatment(id) {
+
+            if (
+                !confirm(
+                    "Are you sure you want to delete this treatment?"
+                )
+            ) {
+                return;
+            }
+
+
+            const response =
+                await fetch(
+                    treatmentAPI + id + "/",
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (response.ok) {
+
+                alert(
+                    "Treatment deleted successfully!"
+                );
+
+                loadTreatments();
+
+            }
+
+            else {
+
+                alert(
+                    "Unable to delete treatment."
+                );
+
+            }
+
+        }
+
+
+        /* ================= INITIAL LOAD ================= */
+
+        loadPatients();
+        loadDoctors();
+        loadAppointments();
+        loadTreatments();
+
+    </script>
+
+</body>
+
+</html>
